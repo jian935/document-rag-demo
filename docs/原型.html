@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>文档智问 · 低保真原型（全界面状态）</title>
+<style>
+:root{
+  --bg:#f5f7fa;--panel:#ffffff;--line:#e3e8f0;--ink:#1f2733;--sub:#6b7482;
+  --blue:#2b5fd9;--blue-bg:#eef3ff;--green:#1f9254;--green-bg:#eafaf1;
+  --amber:#b26a00;--amber-bg:#fff6e5;--red:#c0392b;--red-bg:#fdeceb;
+  --shadow:0 1px 3px rgba(16,24,40,.06),0 6px 18px rgba(16,24,40,.04);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:14px/1.6 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+.layout{display:flex;min-height:100vh}
+.side{width:222px;flex:none;background:var(--panel);border-right:1px solid var(--line);
+  padding:18px 0;position:sticky;top:0;height:100vh;overflow:auto}
+.side h1{font-size:15px;margin:0 18px 4px}
+.side .sub{font-size:11px;color:var(--sub);margin:0 18px 16px;line-height:1.5}
+.side a{display:block;padding:8px 18px;color:var(--sub);text-decoration:none;font-size:13px;
+  border-left:3px solid transparent;cursor:pointer}
+.side a:hover{background:var(--blue-bg);color:var(--blue)}
+.side a.active{border-left-color:var(--blue);background:var(--blue-bg);color:var(--blue);font-weight:600}
+.side .grp{font-size:11px;color:#9aa3b0;padding:14px 18px 4px;letter-spacing:.5px}
+.main{flex:1;padding:28px 34px;max-width:1080px}
+.screen{display:none}
+.screen.active{display:block}
+h2{font-size:20px;margin:0 0 4px}
+.lead{color:var(--sub);margin:0 0 20px;font-size:13px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:20px;margin-bottom:16px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 12px;font-size:15px}
+.badge{display:inline-block;padding:2px 9px;border-radius:5px;font-size:11px;font-weight:600}
+.b-blue{background:var(--blue-bg);color:var(--blue)}
+.b-green{background:var(--green-bg);color:var(--green)}
+.b-amber{background:var(--amber-bg);color:var(--amber)}
+.b-red{background:var(--red-bg);color:var(--red)}
+.b-gray{background:#eef0f4;color:var(--sub)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--sub);font-weight:600;font-size:12px;background:#fafbfd}
+.btn{display:inline-block;background:var(--blue);color:#fff;border:0;border-radius:6px;
+  padding:8px 16px;font-size:13px;cursor:pointer;margin-right:8px}
+.btn.ghost{background:#fff;color:var(--blue);border:1px solid var(--blue)}
+.btn.gray{background:#fff;color:var(--sub);border:1px solid var(--line)}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.muted{color:var(--sub);font-size:12px}
+.notice{background:var(--blue-bg);border-left:3px solid var(--blue);padding:11px 14px;
+  border-radius:5px;font-size:13px;margin-bottom:14px}
+.warnbox{background:var(--amber-bg);border-left:3px solid var(--amber);padding:11px 14px;
+  border-radius:5px;font-size:13px;margin:12px 0}
+.okbox{background:var(--green-bg);border-left:3px solid var(--green);padding:11px 14px;
+  border-radius:5px;font-size:13px;margin:12px 0}
+.field{margin:10px 0}
+.field label{display:block;font-size:12px;color:var(--sub);margin-bottom:4px}
+.field input,.field select,.field textarea{width:100%;padding:8px 10px;border:1px solid var(--line);
+  border-radius:6px;font:13px inherit;background:#fff;color:var(--ink)}
+.field textarea{min-height:64px;resize:vertical}
+.answer{background:#f8fafc;border-left:3px solid var(--blue);border-radius:5px;
+  padding:14px;white-space:pre-wrap;margin:12px 0}
+.cite{border:1px solid var(--line);border-radius:7px;padding:11px 13px;margin:8px 0}
+.cite .src{color:var(--sub);font-size:12px;margin-bottom:5px}
+.cite .txt{font-size:13px;background:#fafbfd;padding:8px;border-radius:4px}
+.chips span{display:inline-block;background:#eef0f4;color:var(--sub);border-radius:14px;
+  padding:3px 10px;font-size:12px;margin:2px 4px 2px 0}
+.bar{height:8px;background:#eef0f4;border-radius:4px;overflow:hidden;min-width:88px}
+.bar i{display:block;height:100%;background:var(--blue)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.timeline{border-left:2px solid var(--line);padding-left:16px;margin:10px 0}
+.timeline div{margin:8px 0;position:relative}
+.timeline div:before{content:"";position:absolute;left:-21px;top:7px;width:8px;height:8px;
+  border-radius:50%;background:var(--blue)}
+.foot{color:#9aa3b0;font-size:11px;text-align:center;margin:26px 0}
+code{background:#f2f4f8;padding:1px 5px;border-radius:3px;font-size:12px}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="side">
+  <h1>文档智问 · 低保真原型</h1>
+  <p class="sub">13 个界面状态<br>模拟资料「青禾集市」· 非真实业务</p>
+  <div class="grp">知识库</div>
+  <a data-s="kb-list" class="active">01 知识库列表</a>
+  <a data-s="kb-new">02 新建知识库</a>
+  <a data-s="upload">03 上传与解析状态</a>
+  <a data-s="doc-manage">04 文档分组与版本</a>
+  <div class="grp">配置</div>
+  <a data-s="chunks">05 切片预览</a>
+  <a data-s="config">06 检索配置</a>
+  <div class="grp">问答</div>
+  <a data-s="qa">07 问答页</a>
+  <a data-s="cite">08 引用展开</a>
+  <a data-s="noanswer">09 无答案状态</a>
+  <a data-s="conflict">10 冲突 + 裁定</a>
+  <a data-s="feedback">11 反馈状态</a>
+  <div class="grp">评测</div>
+  <a data-s="eval">12 评测结果页</a>
+  <a data-s="mapping">13 需求→界面映射</a>
+</aside>
+
+<main class="main">
+
+<!-- 01 -->
+<section class="screen active" id="kb-list">
+  <h2>01 · 知识库列表</h2>
+  <p class="lead">用户先进入自己的知识库列表，再进入某一个开始问答。</p>
+  <div class="card">
+    <div class="row" style="justify-content:space-between">
+      <h3 style="margin:0">我的知识库</h3>
+      <span class="btn" onclick="go('kb-new')">+ 新建知识库</span>
+    </div>
+    <table style="margin-top:14px">
+      <tr><th>名称</th><th>文档数</th><th>切片策略</th><th>最近更新</th><th>状态</th><th>操作</th></tr>
+      <tr><td><b>青禾集市 · 项目资料</b><br><span class="muted">课程项目 / 12 份</span></td>
+          <td>12</td><td>heading（按标题）</td><td>2026-11-05</td>
+          <td><span class="badge b-green">就绪</span></td>
+          <td><a onclick="go('qa')" style="color:var(--blue);cursor:pointer">进入问答</a> · 配置 · 删除</td></tr>
+      <tr><td><b>接口约定 v1.2</b><br><span class="muted">技术说明 / 1 份</span></td>
+          <td>1</td><td>fixed-500</td><td>2026-10-20</td>
+          <td><span class="badge b-green">就绪</span></td><td>进入问答 · 配置</td></tr>
+      <tr><td><b>双十一活动方案</b><br><span class="muted">运营 / 3 份</span></td>
+          <td>3</td><td>heading</td><td>2026-11-01</td>
+          <td><span class="badge b-amber">2 份解析告警</span></td><td>查看告警 · 配置</td></tr>
+    </table>
+  </div>
+  <div class="notice">界面状态说明：列表展示文档数、切片策略与解析状态。解析告警可点开看原因（见 03），不静默吞掉错误。</div>
+</section>
+
+<!-- 02 -->
+<section class="screen" id="kb-new">
+  <h2>02 · 新建知识库</h2>
+  <p class="lead">创建时即确定用途与默认配置，后续可在检索配置里改并记录版本。</p>
+  <div class="card">
+    <div class="field"><label>知识库名称</label><input value="青禾集市 · 项目资料"></div>
+    <div class="field"><label>用途说明（可选）</label><textarea>课程项目的一整套文档：立项、会议纪要、规范、FAQ、任务清单。</textarea></div>
+    <div class="field"><label>默认切片策略</label>
+      <select><option>按标题切分（heading）</option><option>固定长度（fixed）</option></select>
+    </div>
+    <div class="field"><label>初始检索配置</label>
+      <select><option>BM25 关键词 · Top-K 5</option><option>向量检索</option><option>混合检索</option></select>
+    </div>
+    <div class="row"><span class="btn" onclick="go('upload')">创建并上传文档 →</span><span class="btn gray" onclick="go('kb-list')">取消</span></div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="screen" id="upload">
+  <h2>03 · 上传与解析状态</h2>
+  <p class="lead">每份文档逐份显示处理状态；失败给出原因原文与重试入口，不做"上传成功但内容为空"的假成功。</p>
+  <div class="card">
+    <h3>上传队列（12 份）</h3>
+    <table>
+      <tr><th>文件</th><th>格式</th><th>解析状态</th><th>切片数</th><th>说明</th></tr>
+      <tr><td>PRJ-001 立项说明书 v1.0</td><td>DOCX</td><td><span class="badge b-green">完成</span></td><td>18</td><td>—</td></tr>
+      <tr><td>PRJ-002 立项说明书 v1.1</td><td>DOCX</td><td><span class="badge b-green">完成</span></td><td>20</td><td>标记为 v1.1，与新版本并列</td></tr>
+      <tr><td>OPS-001 双十一活动方案</td><td>DOCX</td><td><span class="badge b-green">完成</span></td><td>24</td><td>3 张表格已保留为结构化文本</td></tr>
+      <tr><td>TSK-001 迭代任务清单</td><td>CSV</td><td><span class="badge b-green">完成</span></td><td>12</td><td>逐行解析，保留表头字段</td></tr>
+      <tr><td>TEC-001 小程序接口约定 v1.2</td><td>TXT</td><td><span class="badge b-green">完成</span></td><td>15</td><td>—</td></tr>
+      <tr><td>SCAN-001 线下报名表（扫描件）</td><td>PDF</td><td><span class="badge b-red">解析失败</span></td><td>0</td>
+          <td><span class="muted">原因：扫描件无可复制文本，OCR 未启用 →</span> 提示"上传可复制文本版本 / 人工录入"</td></tr>
+    </table>
+    <div class="row" style="margin-top:14px"><span class="btn ghost">重试失败项</span><span class="btn gray">删除</span></div>
+  </div>
+  <div class="warnbox">产品兜底（第 10 步边界测试导出）：解析失败时告知"问题出在哪"，并给两条出路——上传可复制文本、或指定文件后人工确认。绝不把空内容当成功。</div>
+</section>
+
+<!-- 04 -->
+<section class="screen" id="doc-manage">
+  <h2>04 · 文档分组与版本</h2>
+  <p class="lead">同一主题的不同版本并列保留，标记版本与日期，供冲突裁定时引用。</p>
+  <div class="card">
+    <h3>分组：项目立项说明书</h3>
+    <table>
+      <tr><th>文档</th><th>版本</th><th>日期</th><th>状态</th><th>操作</th></tr>
+      <tr><td>PRJ-001 青禾集市项目立项说明书</td><td><span class="badge b-gray">v1.0</span></td><td>2026-09</td>
+          <td>历史版本</td><td>预览 · 停用</td></tr>
+      <tr><td>PRJ-002 青禾集市项目立项说明书</td><td><span class="badge b-blue">v1.1（较新）</span></td><td>2026-10</td>
+          <td>当前版本</td><td>预览 · 设为当前</td></tr>
+    </table>
+    <div class="okbox">冲突裁定依据（来自第 1 步调研 P0 需求）：回答里出现"以 v1.1 为准"时，用户能在这里看到 v1.1 确实标记为较新、日期更晚，裁定不是凭空说的。</div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="screen" id="chunks">
+  <h2>05 · 切片预览</h2>
+  <p class="lead">上传后先预览切片：用户/设计者能看到一段原文会被切成什么，避免"导入成功但内容抽取错误"。</p>
+  <div class="card">
+    <div class="row"><b>文档：</b>OPS-001 校园推广活动方案.docx
+      <span class="badge b-blue">策略：heading</span><span class="badge b-gray">切片大小 300 字</span></div>
+    <table style="margin-top:12px">
+      <tr><th style="width:90px">切片</th><th>内容预览</th><th>来源</th></tr>
+      <tr><td>C-07</td><td>## 三、补贴档位　满 50 减 10；满 100 减 30，单人限用 1 次……</td><td>OPS-001 / 第 3 节</td></tr>
+      <tr><td>C-08</td><td>## 三、补贴档位（表格）　| 档位 | 门槛 | 补贴 | 小计 | ……</td><td>OPS-001 / 第 3 节表格</td></tr>
+      <tr><td>C-09</td><td>## 四、物料清单　桌牌 20 个、海报 15 张……</td><td>OPS-001 / 第 4 节</td></tr>
+    </table>
+    <div class="notice">表格单独成片（C-08），不混进正文切片——这是表格题 6/6 可核验的界面层保证。</div>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="screen" id="config">
+  <h2>06 · 检索配置</h2>
+  <p class="lead">配置变更留痕，方便对照"改了什么、效果如何"。这里的对照结果见 12 评测页。</p>
+  <div class="card">
+    <div class="grid2">
+      <div>
+        <div class="field"><label>检索方式</label><select><option>BM25 关键词</option><option>向量</option><option>混合</option></select></div>
+        <div class="field"><label>Top-K 召回数</label><select><option>3</option><option selected>5</option><option>8</option></select></div>
+        <div class="field"><label>切片策略</label><select><option selected>heading（按标题）</option><option>fixed-300</option></select></div>
+      </div>
+      <div>
+        <div class="field"><label>生成层</label><select><option>抽取式基线</option><option selected>LLM（结构化 JSON）</option></select></div>
+        <div class="field"><label>Prompt 版本</label><select><option selected>prompt-v1（强制引用/拒答/冲突）</option></select></div>
+      </div>
+    </div>
+    <div class="row"><span class="btn">应用配置并记录版本</span><span class="muted">当前配置版本：cfg-20261118-01</span></div>
+  </div>
+  <div class="card">
+    <h3>配置变更历史</h3>
+    <table>
+      <tr><th>版本</th><th>改动</th><th>日期</th><th>关联评测</th></tr>
+      <tr><td>cfg-01 → cfg-02</td><td>Top-K 3 → 5</td><td>2026-11-17</td><td>cmp-fixed300-k5</td></tr>
+      <tr><td>cfg-02 → cfg-03</td><td>切片 heading → fixed-300</td><td>2026-11-17</td><td>cmp-heading-k3</td></tr>
+      <tr><td>cfg-03 → cfg-04</td><td>生成层 抽取式 → LLM</td><td>2026-11-18</td><td>llm-dev-v1</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="screen" id="qa">
+  <h2>07 · 问答页</h2>
+  <p class="lead">核心界面：提问、答案、来源卡片、可信提示、反馈按钮。真实可交互版本见 usertest/demo_server.py。</p>
+  <div class="card">
+    <div class="field"><label>向「青禾集市 · 项目资料」提问</label>
+      <textarea>满 100 元的订单立减多少？单人限用几次？</textarea></div>
+    <div class="row"><span class="btn" onclick="go('cite')">提问 →</span><span class="muted">当前知识库 12 份 · cfg-04</span></div>
+  </div>
+  <div class="card">
+    <div class="row"><span class="badge b-green">已生成回答</span><span class="badge b-blue">来源：OPS-001</span></div>
+    <div class="answer">满 100 元的订单立减 30 元，单人限用 1 次。依据来自 OPS-001 的补贴档位表。</div>
+    <div class="cite"><div class="src">来源 1：OPS-001_校园推广活动方案.docx / 三、补贴档位（表格）</div>
+      <div class="txt">| 档位 | 门槛 | 补贴 | 说明 |　| B | 满 100 元 | 立减 30 元 | 单人限用 1 次 |</div>
+      <a style="color:var(--blue);cursor:pointer" onclick="go('cite')">查看原文 · 展开引用 →</a></div>
+    <div class="row" style="margin-top:14px">
+      <span class="btn ghost">✓ 有帮助</span><span class="btn gray">✗ 引用不匹配</span>
+      <span class="btn gray">? 未找到资料</span><span class="btn gray">⚠ 解析异常</span></div>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="screen" id="cite">
+  <h2>08 · 引用展开 / 查看原文</h2>
+  <p class="lead">引用可点开、回到原文核对。试用中 6 人主动点开原文 16 次，是核验闭环的关键。</p>
+  <div class="card">
+    <div class="row" style="justify-content:space-between"><h3 style="margin:0">OPS-001_校园推广活动方案.docx</h3>
+      <span class="badge b-gray">原文视图</span></div>
+    <div class="answer" style="border-left-color:var(--green);margin-top:14px">……三、补贴档位
+| 档位 | 门槛 | 补贴金额 | 说明 |
+| A | 满 50 元 | 立减 10 元 | 每人限用 2 次 |
+| B | 满 100 元 | 立减 30 元 | 单人限用 1 次 |
+| C | 满 200 元 | 立减 70 元 | 不与 A/B 叠加 |
+……</div>
+    <div class="notice">界面细节：被引用片段在原文中高亮（此处以底色示意）；引用卡片不伪装成广告——第 1 步 U06 反馈"小卡片以为是广告"，因此加了"查看原文"文字链接与边框。</div>
+    <div class="row"><span class="btn gray" onclick="go('qa')">← 返回问答</span></div>
+  </div>
+</section>
+
+<!-- 09 -->
+<section class="screen" id="noanswer">
+  <h2>09 · 无答案状态（拒答 + 线索）</h2>
+  <p class="lead">资料里没有依据时明确说没有，并按调研 P1 需求给出下一步路径——这是从"6/6 接受但都要给线索"改进来的。</p>
+  <div class="card">
+    <div class="field"><label>用户问题</label><textarea>青禾集市用的是哪家云服务商，服务器配置是多少？</textarea></div>
+    <div class="warnbox"><b>系统提示：依据不足</b><br>当前资料中没有找到"云服务商"或"服务器配置"的相关记录，因此不给出确定答案。</div>
+    <div class="okbox"><b>可以继续的路径（新增）</b>
+      <div class="chips" style="margin-top:6px">
+        <span>最接近的片段：SPE-002 埋点口径（只提到服务器日志，未写供应商）</span>
+        <span>可能相关文档：TEC-001 接口约定</span>
+        <span>建议：向项目负责人确认，或补充该文档后重问</span>
+      </div>
+    </div>
+    <div class="muted">对应原话：U02"它说没写，我就不知道后面该问谁"；U03"拒答太干脆，不告诉我最接近的是哪一段"。</div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="screen" id="conflict">
+  <h2>10 · 冲突状态（并列 + 裁定依据 + 时间线）</h2>
+  <p class="lead">这是本次可用性测试最大的卡点（6/6 无人能确认）。改进后不再只列"两边都说了"，而是并列 + 裁定 + 时间线。</p>
+  <div class="card">
+    <div class="field"><label>用户问题</label><textarea>一期到底做不做微信支付？</textarea></div>
+    <div class="warnbox"><b>发现 2 处说法不一致</b></div>
+    <div class="cite"><div class="src">说法 A · MTG-001 需求评审 09-12 <span class="badge b-gray">较早</span></div>
+      <div class="txt">一期接入微信支付，作为主要成交方式。</div></div>
+    <div class="cite"><div class="src">说法 B · MTG-002 项目周会 10-08 <span class="badge b-blue">较新</span></div>
+      <div class="txt">一期暂不做微信支付，改为跳转微信客户端完成。</div></div>
+    <div class="okbox"><b>裁定建议（产品修正后新增）</b><br>
+      <b>建议以 MTG-002（10-08）为准</b>：时间更晚，且明确取代 MTG-001 的支付决定。
+      <div class="timeline">
+        <div>09-12　MTG-001：决定一期接入微信支付</div>
+        <div>10-08　MTG-002：取消该决定，改跳转微信客户端</div>
+      </div>
+      <span class="muted">裁定依据来自文档日期与"取代"表述，用户可在 04 页面核对版本标记。</span>
+    </div>
+    <div class="muted">对应原话：U01"只告诉我两边都说了，不告诉我按哪个"；U04"冲突提示没有时间线，我得自己排先后"。</div>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="screen" id="feedback">
+  <h2>11 · 反馈状态</h2>
+  <p class="lead">用户标记的问题归入错误类型，反馈进入下一轮迭代依据。正式版会记录反馈用于迭代。</p>
+  <div class="card">
+    <h3>反馈一行 → 错误类型映射</h3>
+    <table>
+      <tr><th>用户点了什么</th><th>归入错误类型</th><th>后续处理</th></tr>
+      <tr><td>✓ 有帮助</td><td>—</td><td>计入"可确认"计数</td></tr>
+      <tr><td>✗ 引用不匹配</td><td>引用不支持答案</td><td>进 12 评测页的引用支持率分母</td></tr>
+      <tr><td>? 未找到资料</td><td>无答案误答 / 拒答过度</td><td>按题型复核，进入错误分类</td></tr>
+      <tr><td>⚠ 解析异常</td><td>文档解析失败</td><td>转 03 上传状态页看原因</td></tr>
+    </table>
+    <div class="notice">埋点字段：event=feedback / question / type / sid。主试可据 sid 区分不同试用者。</div>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="screen" id="eval">
+  <h2>12 · 评测结果页</h2>
+  <p class="lead">每个指标分子分母并列；只支持初步比较，不称"模型准确率"。数字来自本仓库 reports/ 实际报告。</p>
+  <div class="card">
+    <h3>LLM 生成层 · dev 集（40 题）</h3>
+    <table>
+      <tr><th>指标</th><th>结果</th><th>分子/分母</th><th>口径</th></tr>
+      <tr><td>证据召回率</td><td>见 llm-dev-v1_metrics.md</td><td>逐题可查</td><td>片段级</td></tr>
+      <tr><td>答案事实正确率</td><td><b>77.8%</b></td><td>28 / 36</td><td>作者单人判定</td></tr>
+      <tr><td>无答案拒答正确率</td><td><b>4/4</b></td><td>4 / 4</td><td>dev 无答案题</td></tr>
+      <tr><td>冲突识别率</td><td><b>3/3</b></td><td>3 / 3</td><td>dev 冲突题</td></tr>
+    </table>
+    <div class="warnbox">同一页必须同时显示负面结果：dev 有 4 道可答题被过度拒答（Q001/Q025/Q031/Q032），其中 Q031 模型算出 37.5% 后自我推翻。不挑 77.8% 单独对外。</div>
+  </div>
+  <div class="card">
+    <h3>受控对照（每次只改一个变量）</h3>
+    <table>
+      <tr><th>对照</th><th>变量</th><th>结论</th></tr>
+      <tr><td>cmp-fixed300-k5</td><td>切片策略 → fixed-300</td><td>dev 证据召回 97.2% vs heading 88.9%；frozen 未复现优势</td></tr>
+      <tr><td>llm-dev-v1</td><td>生成层 → LLM</td><td>答案正确 47.2% → 77.8%，拒答 0/4 → 4/4（附带过度拒答负面结果）</td></tr>
+    </table>
+    <div class="muted">完整报告：reports/ 目录下各 *_metrics.md 与两份对照报告。冻结集只在最后使用一次，使用次数写在报告里。</div>
+  </div>
+</section>
+
+<!-- 13 -->
+<section class="screen" id="mapping">
+  <h2>13 · 需求 → 界面映射</h2>
+  <p class="lead">证明每个界面状态都有来源：要么来自冻结范围，要么来自调研/试用的真实反馈。</p>
+  <div class="card">
+    <table>
+      <tr><th>界面状态</th><th>来自哪一步 / 哪条证据</th></tr>
+      <tr><td>01 知识库列表 / 02 新建</td><td>第 0 步冻结范围：核心任务"上传→提问→核对"的起点</td></tr>
+      <tr><td>03 上传与解析状态</td><td>第 0 步"必须处理不可解析"；第 10 步扫描件失败兜底</td></tr>
+      <tr><td>04 版本标记</td><td>语料 PRJ-001 v1.0 / PRJ-002 v1.1；调研 P0 裁定需求</td></tr>
+      <tr><td>05 切片预览</td><td>第 5 步要求"预览切片，避免导入成功但抽取错误"</td></tr>
+      <tr><td>06 检索配置 + 变更历史</td><td>第 9 步"设置变更要能记录，方便对比"</td></tr>
+      <tr><td>07 问答页 / 08 引用展开</td><td>试用：表格题 6/6 靠点原文核验；16 次点原文</td></tr>
+      <tr><td>09 无答案 + 线索</td><td>调研 P1：U02/U03"拒答后给线索"（3/6）</td></tr>
+      <tr><td>10 冲突 + 裁定 + 时间线</td><td>调研 P0：4/6 要求裁定；试用冲突题 0/6 能确认</td></tr>
+      <tr><td>11 反馈分类</td><td>第 7 步"反馈归入错误类型"</td></tr>
+      <tr><td>12 评测结果</td><td>第 8 步指标定义；reports/ 实际报告</td></tr>
+    </table>
+  </div>
+  <div class="foot">文档智问 · 低保真原型 · 全部资料为模拟 · 界面为设计稿，非真实线上系统</div>
+</section>
+
+</main>
+</div>
+<script>
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.side a').forEach(a=>a.classList.toggle('active',a.dataset.s===id));
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.side a').forEach(a=>a.onclick=()=>go(a.dataset.s));
+</script>
+</body>
+</html>
